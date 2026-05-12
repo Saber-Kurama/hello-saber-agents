@@ -1,7 +1,7 @@
-from mailbox import Message
 import re
 from typing import Iterator, Optional
 
+from book_demo.core.message import Message
 from book_demo.tools.registry import ToolRegistry
 from book_demo.core.agent import Agent
 from book_demo.core.config import Config
@@ -55,7 +55,7 @@ class SimpleAgent(Agent):
             return response
         
         # 支持多轮工具调用逻辑
-        return self._run_with_tools(messages, max_tool_iterations)
+        return self._run_with_tools(messages, input_text, max_tool_iterations, **kwargs)
 
     def stream_run(self, input_text: str, **kwargs) -> Iterator[str]:
         """
@@ -84,8 +84,8 @@ class SimpleAgent(Agent):
         print()  # 换行
 
         # 保存完整对话到历史记录
-        self.add_message(Message(input_text, "user"))
-        self.add_message(Message(full_response, "assistant"))
+        self.add_message(Message(role="user", content=input_text))
+        self.add_message(Message(role="assistant", content=full_response))
         print(f"✅ {self.name} 流式响应完成")
 
     def _get_enhanced_system_prompt(self) -> str:

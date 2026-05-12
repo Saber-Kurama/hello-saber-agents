@@ -17,13 +17,12 @@ class Message(BaseModel):
     metadata: Optional[Dict[str, Any]] = None
 
     def __init__(self, role: MessageRole, content: str, **kwargs):
-
-        super().__init__({
-            "role": role,
-            "content": content,
-            "timestamp": kwargs.get("timestamp", datetime.now()),
-            "metadata": kwargs.get("metadata", {})
-        })  
+        super().__init__(
+            role=role,
+            content=content,
+            timestamp=kwargs.get("timestamp", datetime.now()),
+            metadata=kwargs.get("metadata", {}),
+        )
 
     def to_dict(self)->Dict[str, Any]:
         """
