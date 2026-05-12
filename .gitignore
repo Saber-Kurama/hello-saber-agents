@@ -1,0 +1,22 @@
+auto_eval/evaluator_config.json
+openspec/
+.openspec/
+.codex/
+.omx/
+!sample/*.csv
+!tests/blackbox/*.csv
+workspace/*
+vars/*
+set_env.sh
+metadata/config/system_settings.py
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+*.ipynb
+.DS_Store
+
+.env

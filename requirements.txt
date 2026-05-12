@@ -1,0 +1,7 @@
+hello-agents==0.2.0
+requests==2.33.1
+tavily-python==0.7.24
+openai==2.32.0
+dotenv==0.9.9
+serpapi==1.0.2
+pydantic>=2.0.0

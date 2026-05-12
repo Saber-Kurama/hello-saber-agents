@@ -1,0 +1,15 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hello-saber-agents"
+version = "0.0.1"
+requires-python = ">=3.10"
+dependencies = [
+    "hello-agents==0.2.0",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["book_demo*"]
