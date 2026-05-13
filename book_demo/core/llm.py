@@ -25,6 +25,7 @@ class HelloAgentsLLM:
     先支持OpenAI的API，后续支持其他API。
     """
     def __init__(self, model: str = None, api_key: str = None, base_url: str = None, timeout: int = None, temperature: float = 0.7, max_tokens: int = None):
+        print("初始化LLM", model, api_key, base_url, timeout, temperature, max_tokens);
         self.model = model or os.getenv("LLM_MODEL_ID")
         self.api_key = api_key or os.getenv("LLM_API_KEY")
         self.base_url = base_url or os.getenv("LLM_BASE_URL")
@@ -81,14 +82,21 @@ class HelloAgentsLLM:
             str: 响应
         """
         try:
+            print("<<<<<<<")
+            print("调用大模型", self.model, messages, kwargs);
+            print("<<<<<<<")
             response = self.client.chat.completions.create(
-                model=self.model,
+                model= self.model,
                 messages=messages,
                 temperature=kwargs.get('temperature', self.temperature),
                 max_tokens=kwargs.get('max_tokens', self.max_tokens),
                 **{k: v for k, v in kwargs.items() if k not in ['temperature', 'max_tokens']}
             )
-            return response.choices[0].message.content
+            result = response.choices[0].message.content
+            print(">>>>>>>");
+            print(result);
+            print(">>>>>>>");
+            return result
         except Exception as e:
             raise Exception(f"LLM调用失败: {str(e)}")
 

@@ -102,9 +102,11 @@ class SimpleAgent(Agent):
         tools_section += tools_description + "\n"
 
         tools_section += "\n## 工具调用格式\n"
-        tools_section += "当需要使用工具时，请使用以下格式:\n"
+        tools_section += "当需要使用工具时，请使用以下格式（单独一行或嵌入在回复中均可）:\n"
         tools_section += "`[TOOL_CALL:{tool_name}:{parameters}]`\n"
-        tools_section += "例如:`[TOOL_CALL:search:Python编程]` 或 `[TOOL_CALL:memory:recall=用户信息]`\n\n"
+        tools_section += "例如:`[TOOL_CALL:search:Python编程]` 或 `[TOOL_CALL:memory:recall=用户信息]`\n"
+        tools_section += "涉及具体算术、公式求值时，必须先调用 `python_calculator`（禁止只靠口算代替工具）。\n"
+        tools_section += "例如: `[TOOL_CALL:python_calculator:2+3*4]`\n\n"
         tools_section += "工具调用结果会自动插入到对话中，然后你可以基于结果继续回答。\n"
 
         return base_prompt + tools_section
