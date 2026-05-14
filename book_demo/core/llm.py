@@ -83,7 +83,7 @@ class HelloAgentsLLM:
         """
         try:
             print("<<<<<<<")
-            print("调用大模型", self.model, messages, kwargs);
+            print( messages, kwargs);
             print("<<<<<<<")
             response = self.client.chat.completions.create(
                 model= self.model,

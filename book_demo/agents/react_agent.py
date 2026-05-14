@@ -96,6 +96,8 @@ class ReActAgent(Agent):
 
             # 解析响应
             thought, action = self._parse_response(response_text)
+            if action:
+                action = self._normalize_react_action(action)
 
             print(f"💡 思考: {thought}")
             print(f"🔧 行动: {action}")
@@ -111,7 +113,14 @@ class ReActAgent(Agent):
             if action:
                 tool_name, tool_input = self._parse_action(action)
                 print(f"🔧 工具调用: {tool_name}, {tool_input}")
-                observation = self.tool_registry.execute_tool(tool_name, tool_input)
+                if not tool_name:
+                    observation = (
+                        "错误：无法解析 Action。请严格使用格式 工具名[参数]，"
+                        "例如 Skill[{\"skill\": \"test-skill\"}] 或 Calculator[{\"expression\": \"1+1\"}]，"
+                        "不要使用 Markdown 反引号包裹整段 Action。"
+                    )
+                else:
+                    observation = self.tool_registry.execute_tool(tool_name, tool_input)
                 print(f"🔧 工具执行结果: {observation}")
                 self.current_history.append(f"Action: {action}")
                 self.current_history.append(f"Observation: {observation}")
@@ -169,15 +178,26 @@ class ReActAgent(Agent):
         
         return thought, action_raw
     
+    def _normalize_react_action(self, action: str) -> str:
+        """去掉模型常加的 Markdown 外层反引号，便于解析 Tool[input]。"""
+        t = (action or "").strip()
+        while len(t) >= 2 and t.startswith("`") and t.endswith("`"):
+            t = t[1:-1].strip()
+        return t
 
     def _parse_action(self, action_text: str) -> Tuple[Optional[str], Optional[str]]:
         """解析行动文本，提取工具名称和输入
         
         使用括号匹配算法而非贪婪正则，正确处理嵌套 JSON。
         """
+        action_text = (action_text or "").strip()
         # 先找工具名
         name_match = re.match(r"(\w+)\[", action_text)
         if not name_match:
+            # 仅写了工具名、未写方括号时，交给注册表按单参兜底等逻辑处理（Finish 仍须 Finish[...]）
+            bare = re.fullmatch(r"(\w+)", action_text)
+            if bare and bare.group(1).lower() != "finish":
+                return bare.group(1), ""
             return None, None
         
         tool_name = name_match.group(1)

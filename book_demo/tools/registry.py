@@ -1,5 +1,6 @@
 """工具注册表 原生工具系统"""
 
+import json
 from typing import Any, Callable
 from .base import Tool
 
